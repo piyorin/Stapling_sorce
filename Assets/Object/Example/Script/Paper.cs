@@ -5,20 +5,20 @@ using UnityEngine;
 public class Paper : MonoBehaviour
 {
 
-    public enum PAPER_REVERSE //裏表プロパティ
+    public enum Face //裏表プロパティ
     {
-        OMOTE, //表
-        URA, //裏
+        UP, //表
+        DOWN, //裏
     }
 
-    public enum PAPER_ORGANIZE //整頓プロパティ
+    public enum Orgenize //整頓プロパティ
     {
         GOOD, //整理されている
         BAD, //整理されていない
     }
 
-    public PAPER_REVERSE reverse = PAPER_REVERSE.OMOTE;
-    public PAPER_ORGANIZE organize = PAPER_ORGANIZE.BAD;
+    public Face reverse = Face.UP;
+    public Orgenize organize = Orgenize.BAD;
 
     public AudioSource audioSource;
     public AudioClip clipStart;
