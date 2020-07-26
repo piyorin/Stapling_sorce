@@ -7,6 +7,7 @@ using UnityEngine;
 public class TapController : MonoBehaviour
 {
     public StaplerController staplerController;
+    public Paper paper;
 
     // タップ開始終了判定
     private enum StartOrStop { START, STOP };
@@ -15,15 +16,15 @@ public class TapController : MonoBehaviour
     private enum TapOrFlick { TAP, VERTICAL, UP, DOWN }
 
     // タップ開始時のカーソル位置
-    private static float tapStartPositionX = 0;
-    private static float tapStartPositionY = 0;
+    private float tapStartPositionX = 0;
+    private float tapStartPositionY = 0;
 
     // タップ中のカーソル位置
-    private static float tapEndPositionX = 0;
-    private static float tapEndPositionY = 0;
+    private float tapEndPositionX = 0;
+    private float tapEndPositionY = 0;
 
     // フリック判定となる値
-    public static float flicJudgeDistance = 0;
+    public float flicJudgeDistance = 1;
 
     void Update()
     {
@@ -37,6 +38,9 @@ public class TapController : MonoBehaviour
         // クリック終了判定
         if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1) || Input.GetMouseButtonUp(2))
         {
+            updateTapPoint(StartOrStop.STOP);
+            mouseButtonUpExecute();
+            Debug.Log("タップが終了した");
         }
     }
 
@@ -57,6 +61,10 @@ public class TapController : MonoBehaviour
             // 横フリックの場合は紙を裏返す処理を呼び出し
             case TapOrFlick.VERTICAL:
                 Debug.Log("判定：横スワイプ");
+                if (paper != null)
+                {
+                    paper.flipOver();
+                }
                 break;
             // 上フリックの場合は提出処理を呼び出し
             case TapOrFlick.UP:
@@ -65,6 +73,10 @@ public class TapController : MonoBehaviour
             // 下フリックの場合は紙を揃える処理を呼び出し
             case TapOrFlick.DOWN:
                 Debug.Log("判定：下フリック");
+                if (paper != null)
+                {
+                    paper.arrange();
+                }
                 break;
         }
     }
