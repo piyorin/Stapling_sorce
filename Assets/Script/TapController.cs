@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 // タップ入力を判定するクラス
 public class TapController : MonoBehaviour
 {
+    public StaplerController staplerController;
+
     // タップ開始終了判定
     private enum StartOrStop { START, STOP };
 
@@ -34,10 +37,6 @@ public class TapController : MonoBehaviour
         // クリック終了判定
         if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1) || Input.GetMouseButtonUp(2))
         {
-            // カーソル位置を更新
-            updateTapPoint(StartOrStop.STOP);
-            mouseButtonUpExecute();
-            Debug.Log("タップが終了した");
         }
     }
 
@@ -50,6 +49,10 @@ public class TapController : MonoBehaviour
             // タップの場合はホッチキスの針生成処理を呼び出し
             case TapOrFlick.TAP:
                 Debug.Log("判定：タップ");
+                staplerController.instance(
+                    (float)Math.Round(tapStartPositionX, 2, MidpointRounding.AwayFromZero),
+                    (float)Math.Round(tapStartPositionY, 2, MidpointRounding.AwayFromZero)
+                );
                 break;
             // 横フリックの場合は紙を裏返す処理を呼び出し
             case TapOrFlick.VERTICAL:
