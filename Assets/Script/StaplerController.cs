@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class StaplerController : MonoBehaviour
 {
-    private List<Vector3> instanceNeedlePositionList = new List<Vector3>();
-
     // 針の数
     private int remainingNeedle = 0;
     private const int remainingNeddleLimmite = 10;
@@ -13,6 +11,8 @@ public class StaplerController : MonoBehaviour
     // 針の生成場所(Z軸)
     public float instancePositionZ;
 
+    // 紙
+    public Paper paperScript;
     // 針
     public GameObject needle;
 
@@ -37,12 +37,13 @@ public class StaplerController : MonoBehaviour
         Debug.Log("針をリロードした");
     }
 
-    // 指定の場所に針がなければ生成、あれば削除する
-    public void instance(float positionX, float positionY)
+    // 紙に針を刺す
+    public void bind(float positionX, float positionY)
     {
         var instancePosition = new Vector3(positionX, positionY, instancePositionZ);
 
-        if (instanceNeedlePositionList.Contains(instancePosition))
+        // 綴じる場所ですでに閉じているなら除去、そうでないなら綴じる
+        if (paperScript.isAlreadyInstance(instancePosition))
         {
             destroy(instancePosition);
         }
@@ -62,8 +63,8 @@ public class StaplerController : MonoBehaviour
         }
 
         // 指定された場所にオブジェクトを生成
-        Instantiate(needle, instancePosition, Quaternion.identity);
-        instanceNeedlePositionList.Add(instancePosition);
+        var instance = Instantiate(needle, instancePosition, Quaternion.identity);
+        paperScript.addInstanceNeedle(instance, instancePosition);
         remainingNeedle--;
         Debug.Log(string.Format("({0}, {1})に針を生成\r\n残り:{2}", instancePosition.x, instancePosition.y, remainingNeedle));
     }
@@ -71,7 +72,7 @@ public class StaplerController : MonoBehaviour
     // 針を削除する
     private void destroy(Vector3 target)
     {
-        instanceNeedlePositionList.Remove(target);
+        paperScript.destroyNeedle(target);
         Debug.Log(string.Format("({0}, {1})の針を削除", target.x, target.y));
     }
 }
