@@ -14,11 +14,10 @@ public class Paper : MonoBehaviour
 
     /*
      生成した針一覧
-     key  : index
-     value: 生成オブジェクト
-     keyは常に増加、正の整数のみ。
+     int         : index
+     StapedNeedle: 生成した針と生成位置を保存するクラス
     */
-    public Dictionary<int, Needle> stapedNeedles = new Dictionary<int, Needle>();
+    private Dictionary<int, StapedNeedle> stapedNeedles = new Dictionary<int, StapedNeedle>();
 
     // 紙のステータス
     public Face faceStatus = Face.UP;
@@ -41,7 +40,9 @@ public class Paper : MonoBehaviour
     /// <param name="stapPosition">綴じる位置</param>
     public void stap(Vector2 stapPosition)
     {
+        // 指定個所に針があるか確認
         int index = checkNeedle(stapPosition);
+
         if (index > 0)
         {
             // 針を抜く
@@ -59,8 +60,11 @@ public class Paper : MonoBehaviour
     /// </summary>
     public void flipOver()
     {
+        Debug.Log(string.Format("紙を裏返す。 裏返す前の状態:{0}", faceStatus));
+
         faceStatus = faceStatus == Face.UP ? Face.DOWN : Face.UP;
         audioSource.PlayOneShot(flipOverClip);
+
         Debug.Log(string.Format("紙を裏返した。 裏返した後の状態:{0}", faceStatus));
     }
 
@@ -70,6 +74,7 @@ public class Paper : MonoBehaviour
     public void arrange()
     {
         Debug.Log(string.Format("紙を揃える 揃える前の状態:{0}", organizeStatus));
+
         // 揃っているならステータス変更はしない
         if (organizeStatus != Orgenize.GOOD)
         {
@@ -77,6 +82,7 @@ public class Paper : MonoBehaviour
             organizeStatus = (Orgenize)Enum.ToObject(typeof(Orgenize), organizeStatus - 1);
         }
         audioSource.PlayOneShot(orgenizeClip);
+
         Debug.Log(string.Format("紙を揃えた 揃えた後の状態:{0}", organizeStatus));
     }
 
@@ -89,15 +95,14 @@ public class Paper : MonoBehaviour
     // 指定番号の針を抜く
     private void pullOutNeedle(int index)
     {
+        Debug.Log(string.Format("針を抜く。 index:{0}", index));
+
         try
         {
-            Debug.Log(string.Format("針を抜く。 index:{0}", index));
-            bool result = stapedNeedles.TryGetValue(index, out Needle target);
-            if (result == false || target == null)
-            {
-                Debug.LogWarning(string.Format("抜くはずだった針がない…？ index:{0}", index));
-                return;
-            }
+            // 削除対象を抽出
+            StapedNeedle target = stapedNeedles[index];
+
+            // 削除
             stapedNeedles.Remove(index);
             Destroy(target);
             Debug.Log(string.Format("針を抜いた。 index:{0}", index));
@@ -113,13 +118,13 @@ public class Paper : MonoBehaviour
     private int checkNeedle(Vector2 position)
     {
         Debug.Log(string.Format("針があるか確認。 x:{0} y:{1}", position.x, position.y));
-        foreach (var needle in stapedNeedles)
+        foreach (var comparison in stapedNeedles)
         {
             // 針があるならkeyを返す
-            if (needle.Value.checkPosition(position))
+            if (comparison.Value.checkPosition(position))
             {
-                Debug.Log(string.Format("針が見つかった。 index:{0}", needle.Key));
-                return needle.Key;
+                Debug.Log(string.Format("針が見つかった。 index:{0}", comparison.Key));
+                return comparison.Key;
             }
             
         }
