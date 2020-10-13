@@ -4,7 +4,7 @@ using System.Collections;
 /// <summary>
 /// Paper上に生成された針
 /// </summary>
-public class StapedNeedle: MonoBehaviour
+public class StapedNeedle
 {
     // プレファブ
     public static Needle needlePrefab;
@@ -21,21 +21,23 @@ public class StapedNeedle: MonoBehaviour
     // 除去判定許容範囲
     public float pullOutRange;
 
-    // 削除されるときは実体もろとも削除
-    private void OnDestroy()
-    {
-        Destroy(entity);
-    }
-
     /// <summary>
-    /// 生成座標を記録
+    /// 生成
     /// </summary>
     /// <param name="position">座標</param>
-    public void setPosition(Vector2 position)
+    public void instance(Vector2 position)
     {
         this.position = position;
-        Instantiate(needlePrefab, new Vector3(position.x, position.y, instancePositionZ), Quaternion.identity);
+        entity = MonoBehaviour.Instantiate(needlePrefab, new Vector3(position.x, position.y, instancePositionZ), Quaternion.identity);
+    }
 
+
+    /// <summary>
+    /// 削除
+    /// </summary>
+    public void destroy()
+    {
+        MonoBehaviour.Destroy(entity);
     }
 
     /// <summary>

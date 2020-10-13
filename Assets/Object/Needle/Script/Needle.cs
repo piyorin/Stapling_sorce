@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class Needle : MonoBehaviour
 {
-    // 生成座標
-    private Vector2 position;
-
     public AudioSource audioSource;
     public AudioClip clipStart;
     public AudioClip clipEnd;

@@ -12,6 +12,10 @@ public class Paper : MonoBehaviour
     //整頓プロパティ
     public enum Orgenize { GOOD, BAD, }
 
+    // 紙のステータス
+    public Face faceStatus = Face.UP;
+    public Orgenize organizeStatus = Orgenize.BAD;
+
     /*
      生成した針一覧
      int         : index
@@ -19,9 +23,8 @@ public class Paper : MonoBehaviour
     */
     private Dictionary<int, StapedNeedle> stapedNeedles = new Dictionary<int, StapedNeedle>();
 
-    // 紙のステータス
-    public Face faceStatus = Face.UP;
-    public Orgenize organizeStatus = Orgenize.BAD;
+    // stapedNeedlesのkey
+    private int index = 0;
 
     public AudioSource audioSource;
     public AudioClip flipOverClip;
@@ -89,7 +92,9 @@ public class Paper : MonoBehaviour
     // 指定された位置で綴じる
     private void stapNeedle(Vector2 position)
     {
-
+        var stapedNeedle = new StapedNeedle();
+        stapedNeedle.instance(position);
+        stapedNeedles.Add(index++, stapedNeedle);
     }
 
     // 指定番号の針を抜く
@@ -104,7 +109,9 @@ public class Paper : MonoBehaviour
 
             // 削除
             stapedNeedles.Remove(index);
-            Destroy(target);
+            target.destroy();
+            target = null;
+
             Debug.Log(string.Format("針を抜いた。 index:{0}", index));
         }
         catch (Exception ex)
