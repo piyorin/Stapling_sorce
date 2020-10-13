@@ -53,7 +53,7 @@ public class TapController : MonoBehaviour
             // タップの場合はホッチキスの針生成処理を呼び出し
             case TapOrFlick.TAP:
                 Debug.Log("判定：タップ");
-                staplerController.instance(
+                staplerController.bind(
                     (float)Math.Round(tapStartPositionX, 2, MidpointRounding.AwayFromZero),
                     (float)Math.Round(tapStartPositionY, 2, MidpointRounding.AwayFromZero)
                 );
